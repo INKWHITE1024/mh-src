@@ -1,0 +1,33 @@
+protocol_version: contract-recovery
+
+scope:
+  initial_assessment_grounding: true
+  reflection_no_new_evidence_contract: true
+  action_policy_changed: false
+  trigger_changed: false
+  outcome_utility_changed: false
+
+initial_grounding:
+  machine_readable_allowlist: true
+  model_repair_attempts: 2
+  exhausted_repair_action: audited_drop_nonallowlisted_segment_values
+  substitute_unknown_with_allowed_id: false
+  preserve_frozen_probability_exactly: true
+  preserve_raw_completion: true
+  all_other_contract_errors: fail_closed
+
+reflection_no_new_evidence:
+  dedicated_prompt: true
+  atomic_evidence_released: false
+  require_grounded_segment_citation: true
+  require_all_atomic_evidence_id_arrays_empty: true
+
+artifact_boundaries:
+  collection_protocol_version: loop-collection
+  overwrite_previous: false
+  dev_access: forbidden
+  test_access: forbidden
+
+interpretation:
+  mechanics_only: true
+  confirmatory_performance_claim: false

@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.coverage
+.DS_Store
+build/
+dist/
+artifacts/
+outputs/
+tmp/
+uv.lock
+*.zip
+/code/
+__MACOSX/

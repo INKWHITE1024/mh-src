@@ -1,0 +1,24 @@
+dataset_key: d_vlog
+dataset_name: D-Vlog
+adapter: d_vlog
+
+# Released arrays contain one row per second. Text-MIL consumes 30-second units.
+window_sec: 30.0
+stride_sec: 15.0
+minimum_tail_sec: 10.0
+sampling_rate_hz: 1.0
+reference_reservoir_per_feature: 50000
+max_rendered_observations_per_unit: 8
+evidence_protocol_default: native
+
+sources:
+  visual:
+    source_id: dvlog_dlib_landmarks
+    extractor: dlib 68-point landmarks
+    version: dataset_release
+    representation_level: geometric_feature
+  audio:
+    source_id: dvlog_egemaps_audio
+    extractor: openSMILE eGeMAPS LLD
+    version: dataset_release
+    representation_level: expert_feature

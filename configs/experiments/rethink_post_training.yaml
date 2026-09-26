@@ -1,0 +1,63 @@
+experiment: rethink_revision_post_training
+
+scope:
+  datasets: [daic_woz, e_daic, d_vlog]
+  train_each_dataset_independently: true
+  cross_dataset_merging: false
+  package_root: outputs/rethink_post_training_package
+  output_root: outputs/rethink_post_training
+
+optimization:
+  transition_weighting:
+    policy: inverse_session_frequency
+    revision_sft_scope: all_rows
+    orpo_scope: action_preferences_only
+    constraint_preferences_reweighted: false
+    preserve_source_false_negative_weight: true
+    max_effective_sample_weight: 10.0
+  revision_sft:
+    epochs: 2
+    learning_rate: 5.0e-5
+    gradient_accumulation: 8
+  orpo_initial:
+    beta: 0.10
+    learning_rate: 2.0e-5
+    epochs:
+      daic_woz: 2
+      e_daic: 2
+      d_vlog: 1
+    forward_mode:
+      daic_woz: concatenated
+      e_daic: streaming_exact_gradient
+      d_vlog: streaming_exact_gradient
+  on_policy_refresh:
+    maximum_sessions: 192
+    filter: correct_transition_and_valid_schema_and_grounded_ids
+    minimum_acceptance_ratio: 0.15
+    minimum_accepted_sessions: 12
+  orpo_refreshed:
+    beta: 0.10
+    learning_rate: 1.0e-5
+    epochs: 1
+
+gates:
+  preference_audit:
+    minimum_overall_accuracy: 0.60
+    minimum_action_accuracy_per_transition: 0.60
+    required_transitions: [CC_preserve, WC_revise, WW_refer]
+    fail_closed: true
+  on_policy_refresh:
+    require_every_transition: true
+    fail_closed: true
+  grpo:
+    minimum_trajectory_pool: 5000
+    minimum_within_group_reward_variance_prompt_ratio: 0.60
+    require_rule_reward_offline_audit: true
+    require_reasoning_error_dominance_over_missing_evidence: true
+    fail_closed: true
+
+execution:
+  datasets_continue_independently_after_failure: true
+  immutable_stage_outputs: true
+  silent_token_truncation: false
+  token_limit: 8192

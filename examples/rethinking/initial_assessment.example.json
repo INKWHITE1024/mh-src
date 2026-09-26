@@ -1,0 +1,28 @@
+{
+  "risk_probability": 0.52,
+  "confidence": 0.43,
+  "audio_source": {
+    "status": "available",
+    "risk_probability": 0.66,
+    "reliability": 0.82
+  },
+  "visual_source": {
+    "status": "available",
+    "risk_probability": 0.35,
+    "reliability": 0.78
+  },
+  "supporting_segment_ids": [
+    "S001"
+  ],
+  "contradictory_segment_ids": [
+    "S002"
+  ],
+  "uncertain_segment_ids": [
+    "S000",
+    "S002"
+  ],
+  "requested_segment_ids": [
+    "S000",
+    "S002"
+  ]
+}

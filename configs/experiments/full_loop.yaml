@@ -1,0 +1,87 @@
+protocol_version: full-loop
+status: preregistered_before_outcome_join
+dataset: daic_woz
+population: train_oof
+outer_split_seed: 42
+outer_folds: 5
+expected_sessions: 107
+
+stage0:
+  probability_source: frozen_three_seed_native_strict_oof_ensemble
+  threshold_source: frozen_native_comparison_train_oof
+  performance_gate: false
+  probability_must_be_preserved_exactly: true
+
+reviewer_routes:
+  literacy_mechanics_only: true
+  passed_fold: fold_local_literacy_adapter_for_query_and_selection
+  failed_fold: base_qwen_for_query_and_selection
+  initial_stage: base_qwen_with_frozen_probability_anchor
+  revision_stage_before_loop_training: base_qwen
+
+collection:
+  primary_method_arm: targeted_learned
+  arms:
+    - targeted_learned
+    - targeted_rank_top
+    - deterministic
+    - random_candidate
+    - full_candidate_context
+    - reflection_no_new_evidence
+    - same_trigger_direct_refer
+  max_queries: 1
+  standard_atomic_budget: 2
+  full_context_atomic_budget: 4
+  max_released_tokens: 2400
+  contract_retries: 2
+  failure_action: refer
+  raw_freeze_required_before_outcome_join: true
+
+primary_utility:
+  negative_log_loss_weight: 1.0
+  negative_brier_weight: 0.5
+  cc_harm_penalty: 1.0
+  query_penalty: 0.02
+  atomic_record_penalty: 0.005
+  released_token_penalty: 0.00001
+  referral_penalty: 0.05
+
+sensitivity_utility:
+  cc_harm_penalty: [0.5, 1.0, 2.0]
+  referral_penalty: [0.0, 0.05, 0.1]
+  cost_scale: [0.0, 1.0, 2.0]
+
+trajectory_selection:
+  eligible_status: contract_valid_and_grounded
+  deterministic_tie_break:
+    - higher_primary_utility
+    - lower_cc_harm
+    - lower_referral
+    - lower_released_tokens
+    - lower_atomic_records
+    - arm_order
+  no_valid_arm_action: refer
+  false_negative_weight: 2.0
+  training_target_policy:
+    initial_correct: highest_utility_accepted_correct_then_grounded_preserve
+    initial_wrong: highest_utility_recovered_else_grounded_refer
+
+reporting:
+  paired_bootstrap_samples: 5000
+  paired_bootstrap_seed: 3726
+  primary_endpoints:
+    - final_brier
+    - final_log_loss
+    - wc_recovered_minus_cc_harmed
+    - accepted_fnr_at_matched_coverage
+    - coverage_at_matched_accepted_fnr
+  always_report_cost_free_proper_scores: true
+  always_report_each_arm: true
+  dev_access: forbidden
+  test_access: forbidden
+  reference_retraining: forbidden
+
+post_training_boundary:
+  current_107_are_training_material_after_outcome_selection: true
+  same_107_loop_trained_metrics_are_not_unbiased_final_evaluation: true
+  final_evaluation_requires: nested_oof_or_untouched_external_population

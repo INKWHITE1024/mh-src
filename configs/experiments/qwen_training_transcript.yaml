@@ -1,0 +1,40 @@
+experiment: qwen_thinker_av_transcript_label_training_native
+profile_id: unweighted_logloss
+scope:
+  dataset: e_daic
+  unchanged:
+    - evidence
+    - transcript
+    - model
+    - lora_rank
+    - learning_rates
+    - scheduler
+    - epoch_budget
+evidence:
+  audiovisual_protocol: native
+  transcript_protocol: compact
+  audiovisual_density: compact
+  audiovisual_token_limit: 2000
+  transcript_token_limit: 3000
+  prompt_token_limit: 4800
+  token_level_text_truncation: false
+optimization:
+  class_weighting: false
+  binary_head_prior_target: empirical_positive_rate_from_fit_only
+  checkpoint_metric: log_loss
+  gradient_accumulation: 8
+  learning_rate: 5.0e-5
+  head_learning_rate: 1.0e-5
+  scheduler: linear
+  warmup_ratio: 0.10
+  weight_decay: 0.0
+  epochs: 6
+gates:
+  reuse_g1: true
+  g2_seeds: [42, 43]
+  fail_closed: true
+boundaries:
+  separate_daic_edaic_training: true
+  test_labels_accessed: false
+  dev_used_for_checkpoint_selection: true
+  oof_permitted_only_after_g2_pass: true

@@ -1,0 +1,8 @@
+{
+  "max_atomic_records": 6,
+  "max_candidates_per_query": 8,
+  "max_first_pass_tokens": 5000,
+  "max_queries": 2,
+  "max_released_tokens": 2400,
+  "require_exact_token_counter": true
+}

@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rethink-mh"
+version = "0.3.0"
+description = "Provenance-preserving multimodal evidence textualization for RETHINK-MH"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.0",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+token-audit = ["transformers>=4.52,<5"]
+qwen = ["transformers>=4.52,<5", "accelerate>=1.7", "torch>=2.5"]
+experiments = ["scikit-learn>=1.4,<2", "scipy>=1.11,<2"]
+test = ["pytest>=7.0"]
+qwen-train = [
+  "transformers>=4.52,<5",
+  "accelerate>=1.7",
+  "torch>=2.5",
+  "peft>=0.17,<1",
+  "scikit-learn>=1.4,<2",
+]
+
+[project.scripts]
+rethink-textualize = "rethink_mh.textualization.cli:main"
+rethink-workflow = "rethink_mh.rethinking.cli:main"
+rethink-text-baseline = "rethink_mh.experiments.text_baseline:main"
+rethink-numeric-baseline = "rethink_mh.experiments.numeric_baseline:main"
+rethink-qwen-label-baseline = "rethink_mh.experiments.qwen_label_baseline:main"
+rethink-evidence-integrity = "rethink_mh.experiments.integrity_audit:main"
+rethink-aggregate-baselines = "rethink_mh.experiments.aggregate_baselines:main"
+rethink-qwen-oof-aggregate = "rethink_mh.experiments.qwen_oof_aggregate:main"
+rethink-build-trajectories = "rethink_mh.experiments.rethink_trajectories:main"
+rethink-post-train = "rethink_mh.experiments.rethink_post_training:main"
+rethink-on-policy-refresh = "rethink_mh.experiments.rethink_on_policy:main"
+rethink-preference-subset = "rethink_mh.experiments.rethink_preference_subset:main"
+rethink-post-training-report = "rethink_mh.experiments.rethink_post_training_report:main"
+rethink-fit-audit = "rethink_mh.experiments.audit_fit:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

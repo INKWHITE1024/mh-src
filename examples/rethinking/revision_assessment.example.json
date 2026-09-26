@@ -1,0 +1,24 @@
+{
+  "revision_status": "unresolved",
+  "revised_risk_probability": 0.49,
+  "revised_confidence": 0.46,
+  "cited_segment_ids": [
+    "S000",
+    "S002"
+  ],
+  "cited_evidence_ids": [
+    "E0000",
+    "E0023"
+  ],
+  "preserved_evidence_ids": [
+    "E0000"
+  ],
+  "newly_considered_evidence_ids": [
+    "E0023"
+  ],
+  "rejected_evidence_ids": [],
+  "residual_conflict_segment_ids": [
+    "S002"
+  ],
+  "change_summary": "insufficient_reliable_detail"
+}

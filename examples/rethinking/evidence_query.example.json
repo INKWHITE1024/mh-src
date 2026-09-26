@@ -1,0 +1,10 @@
+{
+  "budget": 2,
+  "pattern": "cross-modal co-change",
+  "purpose": "resolve source disagreement",
+  "segment_id": "S003",
+  "target_slots": [
+    "speech activity",
+    "facial activity"
+  ]
+}

@@ -1,0 +1,101 @@
+protocol_id: d_vlog_supervised
+experiment: qwen_thinker_d_vlog_supervised
+d_vlog_mode: supervised_independent
+zero_shot_scope: only_ptsd_recognition
+
+dataset:
+  key: d_vlog
+  official_root: /path/to/datasets/dvlog-dataset
+  official_labels: labels.csv
+  official_splits:
+    train: 647
+    valid: 102
+    test: 212
+  target_column: target
+  released_label_mapping:
+    normal: 0
+    depression: 1
+  prepared_split_root: artifacts/d_vlog_supervised/splits
+
+evidence:
+  protocol: native
+  root: artifacts/evidence/native/d_vlog
+  reference: artifacts/evidence/native/d_vlog_reference.train.json
+  reference_fit_split: train
+  transcript_available: false
+  density: compact
+  evidence_token_limit: 2000
+  prompt_token_limit: 4800
+  token_level_truncation: false
+
+model:
+  base_model: /path/to/Qwen2.5-Omni-7B
+  task: configs/tasks/d_vlog_current_depression.json
+  input: text_only
+  head: fp32_binary
+
+gates:
+  g1:
+    kind: balanced_memorization
+    input_splits: [train]
+    examples_per_class: 8
+    expected_fit_count: 16
+    validation_source: same_balanced_fit_subset
+    official_valid_file_read: false
+    test_ids_file_read: false
+    subset_seed: 42
+    seed: 42
+    class_weighting: false
+    checkpoint_metric: log_loss
+    maximum_epochs: 50
+    must_pass_before_full_training: true
+  source_valid:
+    split: official_valid
+    required_for_every_seed: true
+    roc_auc_above: 0.50
+    average_precision_above_prevalence_by: 0.03
+    brier_better_than_constant_prior: true
+    log_loss_better_than_constant_prior: true
+    minimum_unique_probabilities: 10
+    minimum_probability_range: 0.05
+
+training:
+  mode: official_train_only
+  seeds: [42, 43, 44]
+  parallel_independent_runs: true
+  maximum_epochs: 4
+  class_weighting: false
+  loss: unweighted_cross_entropy
+  checkpoint_selection: official_valid_log_loss
+  dev_gradient_updates: false
+  test_gradient_updates: false
+  test_threshold_selection: false
+  test_calibration: false
+
+test_boundary:
+  model_input: sanitized_test_ids_only
+  sanitized_columns: [session_id, split]
+  training_reads_test_labels: false
+  checkpoint_selection_reads_test_labels: false
+  aggregate_reads_test_labels: false
+  label_reader: metric_only_evaluator
+  metric_unlock_after_prediction_freeze: true
+
+aggregation:
+  seeds: [42, 43, 44]
+  probability_rule: equal_arithmetic_mean
+  require_all_source_valid_gates: true
+  output_group: outputs/d_vlog_supervised
+  refuse_overwrite: true
+
+evaluation:
+  expected_test_count: 212
+  bootstrap_samples: 2000
+  bootstrap_seed: 3722
+  metric_unlock_ledger: outputs/d_vlog_supervised/test_access_ledger.jsonl
+
+automation:
+  default_gpu_candidates: [2, 3, 6]
+  default_poll_interval_seconds: 20
+  fail_closed: true
+  exits_after_completion: true

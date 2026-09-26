@@ -1,0 +1,58 @@
+protocol_version: "1.0"
+training_policy:
+  merge_daic_woz_and_e_daic: false
+  cross_test_daic_woz_on_e_daic: false
+  cross_test_e_daic_on_daic_woz: false
+  participant_level_splits: true
+  reference_statistics: train_only_per_dataset
+
+datasets:
+  daic_woz:
+    task: phq8_depression_binary
+    train_split: train
+    model_selection_split: dev
+    labeled_test_split: null
+    report:
+      - participant_level_oof_train
+      - held_out_dev
+
+  e_daic:
+    task: phq8_depression_binary
+    train_split: train
+    model_selection_split: dev
+    final_test_split: test
+    final_test_access: once_after_freeze
+    report:
+      - participant_level_oof_train
+      - held_out_dev
+      - frozen_test
+
+  d_vlog:
+    task: d_vlog_current_depression
+    training_mode: supervised_independent
+    train_split: train
+    model_selection_split: valid
+    evaluation_split: test
+    test_status: previously_accessed_exploratory
+    merge_with_other_datasets: false
+    phq_or_pcl_equivalence_claim: false
+    report:
+      - held_out_valid
+      - frozen_exploratory_test
+
+archived_external_stress_test:
+  dataset: d_vlog
+  run_source_models_separately:
+    - daic_woz_trained
+    - e_daic_trained
+  fine_tune_on_d_vlog: false
+  status: appendix_diagnostic_only
+  claim_scope: historical_transfer_and_missingness_diagnostic
+  phq_or_pcl_equivalence_claim: false
+  e_daic_ptsd_head_evaluated: false
+
+zero_shot:
+  enabled_target: ptsd_recognition_only
+  depression_enabled: false
+  d_vlog_enabled: false
+  require_target_field_and_threshold_freeze_before_evaluation: true

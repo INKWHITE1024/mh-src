@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "risk_probability",
+    "confidence",
+    "audio_source",
+    "visual_source",
+    "supporting_segment_ids",
+    "contradictory_segment_ids",
+    "uncertain_segment_ids",
+    "requested_segment_ids"
+  ],
+  "properties": {
+    "risk_probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "audio_source": {
+      "$ref": "#/$defs/sourceAssessment"
+    },
+    "visual_source": {
+      "$ref": "#/$defs/sourceAssessment"
+    },
+    "supporting_segment_ids": {
+      "$ref": "#/$defs/segmentIds"
+    },
+    "contradictory_segment_ids": {
+      "$ref": "#/$defs/segmentIds"
+    },
+    "uncertain_segment_ids": {
+      "$ref": "#/$defs/segmentIds"
+    },
+    "requested_segment_ids": {
+      "$ref": "#/$defs/segmentIds"
+    }
+  },
+  "$defs": {
+    "sourceAssessment": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "risk_probability",
+            "reliability"
+          ],
+          "properties": {
+            "status": {
+              "const": "available"
+            },
+            "risk_probability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "reliability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "const": "unavailable"
+            }
+          }
+        }
+      ]
+    },
+    "segmentIds": {
+      "type": "array",
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]{3,6}$"
+      }
+    }
+  }
+}

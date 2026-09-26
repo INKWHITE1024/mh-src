@@ -1,0 +1,11 @@
+{
+  "entropy_threshold": 0.85,
+  "confidence_threshold": 0.6,
+  "reliable_source_threshold": 0.6,
+  "source_disagreement_threshold": 0.3,
+  "mean_source_reliability_threshold": 0.6,
+  "min_source_reliability_threshold": 0.4,
+  "trigger_on_evidence_overlap": true,
+  "trigger_on_evidence_coexistence": true,
+  "max_segments": 3
+}

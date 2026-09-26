@@ -1,0 +1,44 @@
+dataset_key: daic_woz
+dataset_name: DAIC-WOZ
+adapter: daic_woz
+
+# Released CLNF/COVAREP features are aggregated on this common grid.
+window_sec: 5.0
+stride_sec: 2.5
+minimum_tail_sec: 2.5
+visual_confidence_threshold: 0.80
+audio_sample_rate_hz: 100.0
+participant_only_audio: true
+reference_reservoir_per_feature: 50000
+max_rendered_observations_per_unit: 8
+evidence_protocol_default: native
+transcript:
+  source_kind: manual_transcript
+  model_speaker_policy: participant_only
+  speaker_role_reliability: explicit_release_annotation
+protocol_native:
+  # The first pass uses at most 8 lossless time segments; all unselected windows
+  # remain indexed for targeted retrieval.
+  segment_sec: 30.0
+  max_segments_per_session: 8
+  selected_slots_per_modality: 2
+  atomic_extensions_per_modality: 0
+
+# Dataset documentation records these non-behavioral interruptions.
+known_intervals:
+  "373":
+    - {start: 352.0, end: 420.0, reason: technical_interruption}
+  "444":
+    - {start: 286.0, end: 387.0, reason: external_interruption}
+
+sources:
+  visual:
+    source_id: daic_clnf_visual
+    extractor: CLNF/OpenFace
+    version: dataset_release
+    representation_level: expert_feature
+  audio:
+    source_id: daic_covarep_audio
+    extractor: COVAREP
+    version: "1.3.2"
+    representation_level: expert_feature

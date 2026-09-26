@@ -1,0 +1,6 @@
+{
+  "task_id": "d_vlog_current_depression",
+  "label_definition": "Positive means the released D-Vlog annotation marks a current depression self-disclosure in the video; this target is dataset-specific and is not interchangeable with PHQ-8 screening.",
+  "negative_label_name": "not_annotated_current_depression",
+  "positive_label_name": "annotated_current_depression"
+}

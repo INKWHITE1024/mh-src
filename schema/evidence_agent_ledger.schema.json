@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rethink-mh.local/schema/evidence_agent_ledger.schema.json",
+  "title": "RETHINK-MH Evidence Agent access-ledger record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "agent_protocol_version",
+    "sequence",
+    "recorded_at_utc",
+    "run_id",
+    "session_fingerprint",
+    "event_type",
+    "payload",
+    "previous_entry_sha256",
+    "entry_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "agent_protocol_version": {
+      "const": "evidence-agent"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "recorded_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{7,127}$"
+    },
+    "session_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "event_type": {
+      "enum": [
+        "agent_opened",
+        "agent_resumed",
+        "query_denied",
+        "candidates_exposed",
+        "release_denied",
+        "evidence_released",
+        "revision_recorded",
+        "agent_aborted",
+        "agent_closed"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "previous_entry_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      ]
+    },
+    "entry_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+dataset_key: e_daic
+dataset_name: E-DAIC
+adapter: e_daic
+
+# A 4-second window with 1-second hop matches the released aggregate/deep grid.
+window_sec: 4.0
+stride_sec: 1.0
+minimum_tail_sec: 2.0
+visual_confidence_threshold: 0.80
+transcript_aligned_audio: true
+reference_reservoir_per_feature: 50000
+max_rendered_observations_per_unit: 8
+evidence_protocol_default: native
+transcript:
+  source_kind: automatic_speech_recognition
+  model_speaker_policy: all_speakers_unassigned
+  speaker_role_reliability: unavailable_mixed_speaker_audio
+
+sources:
+  visual:
+    source_id: edaic_openface_visual
+    extractor: OpenFace
+    version: "2.1.0"
+    representation_level: expert_feature
+  audio:
+    source_id: edaic_egemaps_audio
+    extractor: openSMILE eGeMAPS LLD
+    version: "2.3.0"
+    representation_level: expert_feature

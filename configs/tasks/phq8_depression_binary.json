@@ -1,0 +1,6 @@
+{
+  "task_id": "phq8_depression_binary",
+  "label_definition": "Positive means the released PHQ-8 total score is at least 10; negative means it is below 10. This is a non-diagnostic screening target.",
+  "negative_label_name": "PHQ8_below_10",
+  "positive_label_name": "PHQ8_at_least_10"
+}

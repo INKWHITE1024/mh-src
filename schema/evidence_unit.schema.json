@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rethink-mh.local/schema/evidence-unit-1.0.0.json",
+  "title": "RETHINK-MH Evidence Unit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_id",
+    "dataset",
+    "session_id",
+    "modality",
+    "source",
+    "time_range",
+    "availability",
+    "quality",
+    "context",
+    "observations",
+    "semantic_limits"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "evidence_id": {"type": "string", "pattern": "^[A-Za-z0-9_.:-]+$"},
+    "dataset": {"type": "string", "minLength": 1},
+    "session_id": {"type": "string", "minLength": 1},
+    "modality": {"enum": ["audio", "visual"]},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "extractor", "version", "representation_level", "source_files"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "extractor": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "representation_level": {
+          "enum": ["expert_feature", "geometric_feature", "aggregated_codebook", "deep_embedding", "latent_prototype"]
+        },
+        "source_files": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[^/\\\\]+$"}
+        }
+      }
+    },
+    "time_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_sec", "end_sec"],
+      "properties": {
+        "start_sec": {"type": "number", "minimum": 0},
+        "end_sec": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "missing_reasons", "padding", "privacy_scrubbed"],
+      "properties": {
+        "status": {"enum": ["present", "partial", "unavailable"]},
+        "missing_reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "padding": {"const": false},
+        "privacy_scrubbed": {"type": "boolean"}
+      }
+    },
+    "quality": {"type": "object"},
+    "context": {"type": "object"},
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "category",
+          "percentile",
+          "robust_z",
+          "subject_robust_z",
+          "semantic_reliability",
+          "reference_scope"
+        ],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "value": {"type": "number"},
+          "unit": {"type": "string", "minLength": 1},
+          "category": {"enum": ["very_low", "low", "typical", "high", "very_high", "unreferenced"]},
+          "percentile": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+          "robust_z": {"type": ["number", "null"]},
+          "subject_robust_z": {"type": ["number", "null"]},
+          "semantic_reliability": {"enum": ["direct", "derived", "weak", "latent"]},
+          "reference_scope": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "semantic_limits": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"availability": {"properties": {"status": {"const": "unavailable"}}}}},
+      "then": {"properties": {"observations": {"maxItems": 0}}}
+    }
+  ]
+}

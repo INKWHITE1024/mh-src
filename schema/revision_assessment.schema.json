@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "revision_status",
+    "revised_risk_probability",
+    "revised_confidence",
+    "cited_segment_ids",
+    "cited_evidence_ids",
+    "preserved_evidence_ids",
+    "newly_considered_evidence_ids",
+    "rejected_evidence_ids",
+    "residual_conflict_segment_ids",
+    "change_summary"
+  ],
+  "properties": {
+    "revision_status": {
+      "type": "string",
+      "enum": [
+        "preserved",
+        "revised",
+        "unresolved"
+      ]
+    },
+    "revised_risk_probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "revised_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "cited_segment_ids": {
+      "$ref": "#/$defs/segmentIds"
+    },
+    "cited_evidence_ids": {
+      "$ref": "#/$defs/evidenceIds"
+    },
+    "preserved_evidence_ids": {
+      "$ref": "#/$defs/evidenceIds"
+    },
+    "newly_considered_evidence_ids": {
+      "$ref": "#/$defs/evidenceIds"
+    },
+    "rejected_evidence_ids": {
+      "$ref": "#/$defs/evidenceIds"
+    },
+    "residual_conflict_segment_ids": {
+      "$ref": "#/$defs/segmentIds"
+    },
+    "change_summary": {
+      "anyOf": [
+        {
+          "enum": [
+            "insufficient_reliable_detail",
+            "risk_decreased_after_review",
+            "risk_increased_after_review",
+            "risk_unchanged_after_review"
+          ]
+        },
+        {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 160,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 ,.;:'()/-]*$"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "segmentIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]{3,6}$"
+      }
+    },
+    "evidenceIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^E[0-9]{3,6}$"
+      }
+    }
+  }
+}
